@@ -37,6 +37,33 @@ CReader::CReader()
 	
 }
 
+void CReader::CalPenalty(int id)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		if (bBookList[i].bBookId == id)
+		{
+			time_t now_time = time(NULL);//获取系统时间
+			tm* t_tm = localtime(&now_time);
+			if (t_tm->tm_year > bBookList[i].bTime.tm_year)//是否有逾期未还
+			{
+				int daynum = t_tm->tm_yday + (365*(t_tm->tm_year- bBookList[i].bTime.tm_year) - bBookList[i].bTime.tm_yday);
+				if (daynum - 30 > 0)
+				{
+					Plenalty = 0.1 * daynum + Plenalty;
+				}
+			}
+			else
+			{
+				if (t_tm->tm_yday - bBookList[i].bTime.tm_yday - 30 > 0)//是否有逾期未还
+				{
+					Plenalty = Plenalty + ((t_tm->tm_yday) - bBookList[i].bTime.tm_yday - 30) * 0.1;
+				}
+			}
+		}
+	}
+}
+
 bool CReader::SetPhone(const char* ph)
 {
 	strcpy(phone, ph);
@@ -50,19 +77,22 @@ int CReader::HasPenalty()
 	int num = 0;
 	for (int i = 0; i < 10; i++)
 	{
-		if (t_tm->tm_year > bBookList[i].bTime.tm_year)//是否有逾期未还
+		if (bBookList[i].bBookId != 0)
 		{
-			int daynum = t_tm->tm_yday + (365 - bBookList[i].bTime.tm_yday);
-			if (daynum > 30)
+			if (t_tm->tm_year > bBookList[i].bTime.tm_year)//是否有逾期未还
 			{
-				num++;
+				int daynum = t_tm->tm_yday + (365 - bBookList[i].bTime.tm_yday);
+				if (daynum > 30)
+				{
+					num++;
+				}
 			}
-		}
-		else
-		{
-			if (t_tm->tm_yday - bBookList[i].bTime.tm_yday > 30)//是否有逾期未还
+			else
 			{
-				num++;
+				if (t_tm->tm_yday - bBookList[i].bTime.tm_yday > 30)//是否有逾期未还
+				{
+					num++;
+				}
 			}
 		}
 	}

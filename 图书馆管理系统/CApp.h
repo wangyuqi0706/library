@@ -14,9 +14,12 @@ private:
 public:
 	~CApp();
 	CApp();
-	void DisplayOverDueBook(const CReader &a);
+	void DisplayOverDueBook(CReader &a);
+	void ReviseReader();//修改读者信息（包括缴纳金的支付清零）
 	char* GetAdminName();
 	void ShowMain();
+	void ReturnBook(CReader& a);
+
 	bool logon();
 	bool login();
 	bool isFindUser(const char* name);
@@ -26,6 +29,7 @@ public:
 	int DisplayFirstPage();
 	bool LoadData();
 	void BorrowBook(CReader &a);
+	void RevertByAdmin(CReader a);//管理员手动归还
 	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
 	int DisplayAdminMenu();
@@ -35,7 +39,7 @@ public:
 
 
 	bool AddBookInfo();//添加书籍信息
-	bool RevertByAdmin();//管理员手动归还
+	bool ChangeBookInfo();//管理员手动归还
 	bool DisplayUser_bBook();//显示某用户所借图书
 	bool DisplayUser_bBook(const char * toSrchName);
 	bool DisplayAllBooks();//所有馆藏书籍
@@ -44,5 +48,6 @@ public:
 	void DeleteBook();
 	bool SaveData();
 	void printfbook(std::list<CBook>::iterator);
+	void PrintTitle();
 };
 
