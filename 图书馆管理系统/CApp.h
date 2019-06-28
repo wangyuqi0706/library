@@ -6,7 +6,7 @@ using namespace std;
 class CApp
 {
 private:
-	CUser* currentUser=0;
+	char currentUserName[20];
 	list<CBook> bookList;
 	list<CUser> userList;
 public:

@@ -86,6 +86,7 @@ bool CApp::login()
 		if (strcmp(tpasswd, (*i).GetPasswd()) == 0)
 		{
 			cout << "µÇÂ½³É¹¦" << endl;
+			strcpy(currentUserName, tname);
 			system("pause");
 			return true;
 		}
