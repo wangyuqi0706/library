@@ -23,3 +23,10 @@ void CUser::SetPasswd(const char* tpwd)
 }
 
 
+
+
+char* CUser::GetPasswd()
+{
+	// TODO: 在此处添加实现代码.
+	return pwd;
+}

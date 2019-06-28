@@ -16,6 +16,7 @@ public:
 	void SetName(const char* n);
 	char* GetName();
 	void SetPasswd(const char* tpwd);
+	char* GetPasswd();
 };
 class CReader :public CUser
 {

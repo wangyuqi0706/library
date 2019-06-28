@@ -28,7 +28,7 @@ bool CApp::logon()
 		cout << "***************************************用户注册*******************************************" << endl;
 		cout << "用户名：" << endl;
 		cin >> tname;
-		if (FindUser(tname) == true)
+		if (isFindUser(tname) == true)
 		{
 			cout << "该用户名已被注册！" << endl;
 			system("pause");
@@ -67,14 +67,40 @@ bool CApp::logon()
 
 bool CApp::login()
 {
-	system("cls");
-	cout << "***************************************用户登录*******************************************" << endl;
-
+	while (1)
+	{
+		system("cls");
+		cout << "***************************************用户登录*******************************************" << endl;
+		cout << "用户名：";
+		char tname[20] = { 0 };
+		cin >> tname;
+		if (isFindUser(tname) == false)
+		{
+			cout << "该用户不存在!" << endl;
+			continue;
+		}
+		cout << "密码:";
+		char tpasswd[20] = { 0 };
+		inputPassword(tpasswd);
+		auto i = FindUser(tname);
+		if (strcmp(tpasswd, (*i).GetPasswd()) == 0)
+		{
+			cout << "登陆成功" << endl;
+			system("pause");
+			return true;
+		}
+		else
+		{
+			cout << "密码输入错误！" << endl;
+			system("pause");
+			continue;
+		}
+	}
 	return false;
 }
 
 
-bool CApp::FindUser(const char* cname)
+bool CApp::isFindUser(const char* cname)
 {
 	for (auto i = userList.begin(); i != userList.end(); i++)
 	{
@@ -147,4 +173,15 @@ bool CApp::LoadData()
 	fstream fp("data.dat", ios::in | ios::binary);
 	// TODO: 在此处添加实现代码.
 	return false;
+}
+
+
+list<CUser>::iterator CApp::FindUser(const char* n)
+{
+	for (auto i = userList.begin(); i != userList.end(); i++)
+	{
+		if (strcmp(n, (*i).GetName()) == 0)
+			return i;
+	}
+	return userList.end();
 }

@@ -13,10 +13,11 @@ public:
 	void ShowMain();
 	bool logon();
 	bool login();
-	bool FindUser(const char* name);
+	bool isFindUser(const char* name);
 	bool isPwdRight(const char* pwd);
 	void inputPassword(char* passwd);
 	bool DisplayFirstPage();
 	bool LoadData();
+	list<CUser>::iterator FindUser(const char* n);
 };
 
