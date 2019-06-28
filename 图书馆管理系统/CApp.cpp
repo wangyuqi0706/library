@@ -11,6 +11,7 @@ void CApp::ShowMain()
 	cout << "                               1.登录" << endl;
 	cout << "                               2.注册" << endl;
 	cout << "                               3.还书" << endl;
+	cout << "                               0.退出" << endl;
 	cout << "****************************************************************************************" << endl;
 	cout << "输入序号选择功能：";
 
@@ -156,10 +157,16 @@ bool CApp::DisplayFirstPage()
 	switch (key)
 	{
 	case 1:
-		login();
+		if (login() == true)
+			return false;
 		break;
 	case 2:
 		logon();
+		break;
+	case 3:
+		break;
+	case 0:
+		return false;
 		break;
 	default:
 		cout << "请输入正确的指令" << endl;
