@@ -7,6 +7,7 @@ CApp::CApp()
 {
 	admin.SetName("Admin");
 	admin.SetPasswd("0000");
+
 }
 void CApp::ShowMain()
 {
@@ -24,7 +25,7 @@ bool CApp::logon()
 {
 	CReader user;
 	char tname[30] = { 0 };
-	char tpwd[30] = { 0 };
+	char tpwd[20] = { 0 };
 	int x = sizeof(tpwd);
 	while (1)
 	{
@@ -38,6 +39,9 @@ bool CApp::logon()
 			system("pause");
 			continue;
 		}
+		cout << "输入电话号码：";
+		char phone[12];
+		cin >> phone;
 		cout << "输入密码：";
 		inputPassword(tpwd);
 		if (isPwdRight(tpwd) == false)
@@ -46,7 +50,7 @@ bool CApp::logon()
 			continue;
 		}
 		cout << "确认密码：";
-		char tpwd2[16] = { 0 };
+		char tpwd2[20] = { 0 };
 		inputPassword(tpwd2);
 		if (strcmp(tpwd, tpwd2) == 0)
 		{
@@ -205,7 +209,13 @@ bool CApp::DisplayFirstPage()
 bool CApp::LoadData()
 {
 	fstream fp("data.dat", ios::in | ios::binary);
-	// TODO: 在此处添加实现代码.
+	if (fp.is_open() == false)
+	{
+		fp.open("data.dat", ios::out | ios::binary);
+		fp.close();
+		fp.open("data.dat", ios::in | ios::binary);
+	}
+
 	return false;
 }
 
@@ -286,9 +296,32 @@ bool CApp::DisplayReaderMenu()
 	cin >> key;
 	switch (key)
 	{
-		c
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 0:
+			return false;
+			break;
 	default:
 		break;
 	}
+	return false;
+}
+
+bool CApp::AddBookInfo()
+{
+
+	return true;
+}
+
+bool CApp::AddBookInfo()
+{
 	return false;
 }

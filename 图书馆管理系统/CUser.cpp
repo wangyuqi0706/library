@@ -30,8 +30,3 @@ char* CUser::GetPasswd()
 	// TODO: 在此处添加实现代码.
 	return pwd;
 }
-
-bool CAdmin::AddBookInfo()
-{
-	return false;
-}
