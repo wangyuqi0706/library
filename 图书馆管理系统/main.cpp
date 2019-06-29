@@ -9,5 +9,6 @@ int main()
 {
 	CApp theApp;
 	while (theApp.DisplayFirstPage() == true);
-		
+	if (theApp.GetCurUserName() == "Admin");
+	return 0;
 }

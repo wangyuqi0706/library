@@ -9,7 +9,9 @@ private:
 	char currentUserName[20];
 	list<CBook> bookList;
 	list<CUser> userList;
+	CAdmin admin;
 public:
+	CApp();
 	void ShowMain();
 	bool logon();
 	bool login();
@@ -19,5 +21,6 @@ public:
 	bool DisplayFirstPage();
 	bool LoadData();
 	list<CUser>::iterator FindUser(const char* n);
+	char* GetCurUserName();
 };
 

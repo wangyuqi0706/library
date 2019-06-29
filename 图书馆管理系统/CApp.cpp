@@ -3,6 +3,12 @@
 #include<fstream>
 #include<conio.h>
 using namespace std;
+CApp::CApp()
+{
+	admin;
+	admin.SetName("Admin");
+	admin.SetPasswd("0000");
+}
 void CApp::ShowMain()
 {
 
@@ -13,7 +19,6 @@ void CApp::ShowMain()
 	cout << "                               3.还书" << endl;
 	cout << "****************************************************************************************" << endl;
 	cout << "输入序号选择功能：";
-
 }
 
 bool CApp::logon()
@@ -185,4 +190,11 @@ list<CUser>::iterator CApp::FindUser(const char* n)
 			return i;
 	}
 	return userList.end();
+}
+
+
+char* CApp::GetCurUserName()
+{
+	// TODO: 在此处添加实现代码.
+	return currentUserName;
 }
