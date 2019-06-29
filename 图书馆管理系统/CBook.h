@@ -1,6 +1,7 @@
 #pragma once
 #include<ctime>
 #include<vector>
+#include<string>
 typedef struct b
 {
 	tm bTime;

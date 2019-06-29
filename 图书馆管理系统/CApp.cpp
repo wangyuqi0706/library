@@ -5,7 +5,6 @@
 using namespace std;
 CApp::CApp()
 {
-	admin;
 	admin.SetName("Admin");
 	admin.SetPasswd("0000");
 }
@@ -16,7 +15,6 @@ void CApp::ShowMain()
 	cout << "****************************************************************************************" << endl;
 	cout << "                               1.登录" << endl;
 	cout << "                               2.注册" << endl;
-	cout << "                               3.还书" << endl;
 	cout << "                               0.退出" << endl;
 	cout << "****************************************************************************************" << endl;
 	cout << "输入序号选择功能：";
@@ -26,13 +24,13 @@ bool CApp::logon()
 {
 	CReader user;
 	char tname[30] = { 0 };
-	char tpwd[16] = { 0 };
-
+	char tpwd[30] = { 0 };
+	int x = sizeof(tpwd);
 	while (1)
 	{
 		system("cls");
 		cout << "***************************************用户注册*******************************************" << endl;
-		cout << "用户名：" << endl;
+		cout << "用户名：";
 		cin >> tname;
 		if (isFindUser(tname) == true)
 		{
@@ -44,7 +42,6 @@ bool CApp::logon()
 		inputPassword(tpwd);
 		if (isPwdRight(tpwd) == false)
 		{
-			cout << "该密码含有非法字符！" << endl;
 			system("pause");
 			continue;
 		}
@@ -80,15 +77,24 @@ bool CApp::login()
 		cout << "用户名：";
 		char tname[20] = { 0 };
 		cin >> tname;
-		if (isFindUser(tname) == false)
+		if (isFindUser(tname) == false&& strcmp(tname, admin.GetName()) != 0)
 		{
 			cout << "该用户不存在!" << endl;
+			system("pause");
 			continue;
 		}
 		cout << "密码:";
 		char tpasswd[20] = { 0 };
 		inputPassword(tpasswd);
+		if (strcmp(tname, admin.GetName()) == 0 && strcmp(tpasswd, admin.GetPasswd())==0)
+		{
+			cout << "登陆成功" << endl;
+				strcpy(currentUserName, tname);
+				system("pause");
+				return true;
+		}
 		auto i = FindUser(tname);
+
 		if (strcmp(tpasswd, (*i).GetPasswd()) == 0)
 		{
 			cout << "登陆成功" << endl;
@@ -123,11 +129,27 @@ bool CApp::isFindUser(const char* cname)
 
 bool CApp::isPwdRight(const char* pwd)
 {
-	for (int i = 0; i < sizeof(pwd) / sizeof(pwd[0])-1; i++)
+	int len = strlen(pwd);
+	if (len <= 6)
 	{
-		if (((pwd[i] >= '0' && pwd[i] <= '9') || (pwd[i] >= 'a' && pwd[i] <= 'z') || (pwd[i] >= 'A' && pwd[i] <= 'Z') || (pwd[i] == 0)) == 0)
-			return false;
+		cout << "密码长度过短！" << endl;
+		return false;
 	}
+	if (len>= 18)
+	{
+		cout << "密码长度过长！" << endl;
+		return false;
+	}
+	for (int i = 0; i < len-1; i++)
+	{
+		
+		if (((pwd[i] >= '0' && pwd[i] <= '9') || (pwd[i] >= 'a' && pwd[i] <= 'z') || (pwd[i] >= 'A' && pwd[i] <= 'Z') || (pwd[i] == 0)) == 0)
+		{
+			cout << "该密码含有非法字符！" << endl;
+			return false;
+		}
+	}
+
 	// TODO: 在此处添加实现代码.
 	return true;
 }
@@ -150,6 +172,7 @@ void CApp::inputPassword(char* passwd)
 		}
 		passwd[i] = _getch();
 	}
+	passwd[i] = '\0';
 	cout << endl;
 }
 
@@ -167,8 +190,6 @@ bool CApp::DisplayFirstPage()
 		break;
 	case 2:
 		logon();
-		break;
-	case 3:
 		break;
 	case 0:
 		return false;
@@ -189,7 +210,7 @@ bool CApp::LoadData()
 }
 
 
-list<CUser>::iterator CApp::FindUser(const char* n)
+list<CReader>::iterator CApp::FindUser(const char* n)
 {
 	for (auto i = userList.begin(); i != userList.end(); i++)
 	{
@@ -204,4 +225,70 @@ char* CApp::GetCurUserName()
 {
 	// TODO: 在此处添加实现代码.
 	return currentUserName;
+}
+
+
+bool CApp::DisplayAdminMenu()
+{
+	system("cls");
+	cout << "***************************************管理员菜单*******************************************" << endl;
+	cout << "                               1.增删书籍信息" << endl;
+	cout << "                               2.逾期未还查询" << endl;
+	cout << "                               3.手动归还" << endl;
+	cout << "                               4.用户借阅查询" << endl;
+	cout << "                               5.用户信息查询修改" << endl;
+	cout << "                               6.馆藏查询" << endl;
+	cout << "                               7.缴纳滞纳金" << endl;
+	cout << "                               0.退出" << endl;
+	cout << "输入序号选择功能：";
+	int key;
+	cin >> key;
+	switch (key)
+	{
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 0:
+		return false;
+	default:
+		break;
+	}
+
+	// TODO: 在此处添加实现代码.
+	return true;
+}
+
+
+bool CApp::DisplayReaderMenu()
+{
+	// TODO: 在此处添加实现代码.
+	system("cls");
+	cout << "***************************************用户菜单*******************************************" << endl;
+	cout << "                               1.借阅书籍" << endl;
+	cout << "                               2.已借阅书籍" << endl;
+	cout << "                               3.预约书籍" << endl;
+	cout << "                               4.滞纳金查询" << endl;
+	cout << "                               5.书籍查询" << endl;
+	cout << "                               0.退出" << endl;
+	cout << "输入序号选择功能：";
+	int key;
+	cin >> key;
+	switch (key)
+	{
+		c
+	default:
+		break;
+	}
+	return false;
 }

@@ -8,7 +8,7 @@ class CApp
 private:
 	char currentUserName[20];
 	list<CBook> bookList;
-	list<CUser> userList;
+	list<CReader> userList;
 	CAdmin admin;
 public:
 	CApp();
@@ -20,7 +20,9 @@ public:
 	void inputPassword(char* passwd);
 	bool DisplayFirstPage();
 	bool LoadData();
-	list<CUser>::iterator FindUser(const char* n);
+	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
+	bool DisplayAdminMenu();
+	bool DisplayReaderMenu();
 };
 

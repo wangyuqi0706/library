@@ -24,5 +24,9 @@ class CReader :public CUser
 };
 class CAdmin : public CUser
 {
-
+public:
+	bool AddBookInfo();
+	bool DisplayOverDueUser();
+	bool RevertByAdmin();
+	//bool Display;
 };
