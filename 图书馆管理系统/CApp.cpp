@@ -186,7 +186,7 @@ void CApp::inputPassword(char* passwd)
 }
 
 
-bool CApp::DisplayFirstPage()
+int CApp::DisplayFirstPage()
 {
 	ShowMain();
 	int key;
@@ -195,13 +195,13 @@ bool CApp::DisplayFirstPage()
 	{
 	case 1:
 		if (login() == true)
-			return false;
+			return 0;
 		break;
 	case 2:
 		logon();
 		break;
 	case 0:
-		return false;
+		return -1;
 		break;
 	default:
 		cout << "请输入正确的指令" << endl;

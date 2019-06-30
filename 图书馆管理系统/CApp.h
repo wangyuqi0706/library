@@ -19,7 +19,7 @@ public:
 	bool isFindUser(const char* name);
 	bool isPwdRight(const char* pwd);
 	void inputPassword(char* passwd);
-	bool DisplayFirstPage();
+	int DisplayFirstPage();
 	bool LoadData();
 	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
