@@ -1,7 +1,5 @@
 #pragma once
 #include<ctime>
-#include<vector>
-#include<string>
 class CBook
 {
 public:
