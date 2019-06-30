@@ -5,12 +5,19 @@
 using namespace std;
 CApp::~CApp()
 {
+	
 	SaveData();
 }
 CApp::CApp()
 {
+	admin.SetName("A");
+	admin.SetPasswd("0");
 	strcpy(currentUserName, "");
 	LoadData();
+}
+char* CApp::GetAdminName()
+{
+	return admin.GetName();
 }
 void CApp::ShowMain()
 {
@@ -44,7 +51,6 @@ bool CApp::logon()
 			continue;
 		}
 		cout << "输入电话号码：";
-		
 		cin >> phone;
 		cout << "输入密码：";
 		inputPassword(tpwd);
@@ -86,21 +92,30 @@ bool CApp::login()
 		cout << "用户名：";
 		char tname[20] = { 0 };
 		cin >> tname;
-		if (isFindUser(tname) == false&& strcmp(tname, admin.GetName()) != 0)
+		if (isFindUser(tname) == false && strcmp(tname, admin.GetName()) != 0)
 		{
-			cout << "该用户不存在!" << endl;
-			system("pause");
+			cout << "该用户不存在!是否注册？y/n" << endl;
+			char k1;
+			cin >> k1;
+			switch (k1)
+			{
+			case 'y':logon(); break;
+			case 'n':return false; 
+			default:
+				cout << "请输入正确的命令！" << endl;
+				break;
+			}
 			continue;
 		}
 		cout << "密码:";
 		char tpasswd[20] = { 0 };
 		inputPassword(tpasswd);
-		if (strcmp(tname, admin.GetName()) == 0 && strcmp(tpasswd, admin.GetPasswd())==0)
+		if (strcmp(tname, admin.GetName()) == 0 && strcmp(tpasswd, admin.GetPasswd()) == 0)
 		{
-			cout << "登录成功" << endl;
-				strcpy(currentUserName, tname);
-				system("pause");
-				return true;
+			cout << "管理员 "<<admin.GetName()<<" 登录成功" << endl;
+			strcpy(currentUserName, tname);
+			system("pause");
+			return true;
 		}
 		auto i = FindUser(tname);
 
@@ -139,19 +154,19 @@ bool CApp::isFindUser(const char* cname)
 bool CApp::isPwdRight(const char* pwd)
 {
 	int len = strlen(pwd);
-	if (len <= 6)
+	if (len <= 7)
 	{
 		cout << "密码长度过短！" << endl;
 		return false;
 	}
-	if (len>= 18)
+	if (len >= 18)
 	{
 		cout << "密码长度过长！" << endl;
 		return false;
 	}
-	for (int i = 0; i < len-1; i++)
+	for (int i = 0; i < len - 1; i++)
 	{
-		
+
 		if (((pwd[i] >= '0' && pwd[i] <= '9') || (pwd[i] >= 'a' && pwd[i] <= 'z') || (pwd[i] >= 'A' && pwd[i] <= 'Z') || (pwd[i] == 0)) == 0)
 		{
 			cout << "该密码含有非法字符！" << endl;
@@ -189,22 +204,24 @@ void CApp::inputPassword(char* passwd)
 int CApp::DisplayFirstPage()
 {
 	ShowMain();
-	int key;
+	char key;
 	cin >> key;
 	switch (key)
 	{
-	case 1:
+	case '1':
 		if (login() == true)
 			return 0;
 		break;
-	case 2:
+	case '2':
 		logon();
 		break;
-	case 0:
+	case '0':
 		return -1;
 		break;
 	default:
 		cout << "请输入正确的指令" << endl;
+		system("pause");
+		return 1;
 		break;
 	}
 	return true;// TODO: 在此处添加实现代码.
@@ -259,17 +276,58 @@ char* CApp::GetCurUserName()
 }
 
 
-bool CApp::DisplayAdminMenu()
+int CApp::DisplayAdminMenu()
 {
 	system("cls");
 	cout << "***************************************管理员菜单*******************************************" << endl;
-	cout << "                               1.增删书籍信息" << endl;
-	cout << "                               2.逾期未还查询" << endl;
-	cout << "                               3.手动归还" << endl;
-	cout << "                               4.用户借阅查询" << endl;
-	cout << "                               5.用户信息查询修改" << endl;
-	cout << "                               6.馆藏查询" << endl;
-	cout << "                               7.缴纳滞纳金" << endl;
+	cout << "                               1.增加书籍信息" << endl;
+	cout << "                               2.删除书籍信息" << endl;
+	cout << "                               3.修改书籍库存" << endl;
+	cout << "                               4.逾期未还查询" << endl;
+	cout << "                               5.显示所有书籍信息" << endl;
+
+	cout << "                               0.退出" << endl;
+	cout << "输入序号选择功能：";
+	int key;
+	cin >> key;
+	switch (key)
+	{
+	case 1:
+		AddBookInfo();
+		break;
+	case 2:
+		DeleteBook();
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		DisplayAllBooks();
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 0:
+		return -1;
+	default:
+		break;
+	}
+	return 1;
+}
+
+
+int CApp::DisplayReaderMenu()
+{
+	// TODO: 在此处添加实现代码.
+	system("cls");
+	cout << "***************************************用户菜单*******************************************" << endl;
+	cout << "                               1.借阅书籍" << endl;
+	cout << "                               2.已借阅书籍" << endl;
+	cout << "                               3.预约书籍" << endl;
+	cout << "                               4.滞纳金查询" << endl;
+	cout << "                               5.书籍查询" << endl;
 	cout << "                               0.退出" << endl;
 	cout << "输入序号选择功能：";
 	int key;
@@ -286,50 +344,9 @@ bool CApp::DisplayAdminMenu()
 		break;
 	case 5:
 		break;
-	case 6:
-		break;
-	case 7:
-		break;
 	case 0:
 		return false;
-	default:
 		break;
-	}
-
-	// TODO: 在此处添加实现代码.
-	return true;
-}
-
-
-bool CApp::DisplayReaderMenu()
-{
-	// TODO: 在此处添加实现代码.
-	system("cls");
-	cout << "***************************************用户菜单*******************************************" << endl;
-	cout << "                               1.借阅书籍" << endl;
-	cout << "                               2.已借阅书籍" << endl;
-	cout << "                               3.预约书籍" << endl;
-	cout << "                               4.滞纳金查询" << endl;
-	cout << "                               5.书籍查询" << endl;
-	cout << "                               0.退出" << endl;
-	cout << "输入序号选择功能：";
-	int key;
-	cin >> key;
-	switch (key)
-	{
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		case 0:
-			return false;
-			break;
 	default:
 		break;
 	}
@@ -339,12 +356,69 @@ bool CApp::DisplayReaderMenu()
 bool CApp::AddBookInfo()
 {
 
+	char name[15], kind[15], author[15];
+	auto i = Search_BookPos_WithAB(name, author);
+	if (i != bookList.end())//已存在该书
+	{
+		cout << "您输入的书籍已存在，请去修改书籍数量。" << endl;
+	}
+	else//如果没有该书
+	{
+		CBook newbook;
+		int sum;
+		cout << "请输入图书检索号：" << endl;
+		cin >> newbook.book_id;
+		cout << "请输入图书总库存存量：" << endl;
+		cin >> sum;
+		cout << "请输入图书种类：" << endl;
+		cin >> newbook.kind;
+		cout << "请输入图书书名：" << endl;
+		cin >> newbook.name;
+		cout << "请输入图书作者：" << endl;
+		cin >> newbook.author;
+		cout << "请输入图书书籍定价：" << endl;
+		cin >> newbook.price;
+		newbook.now_sum = newbook.sum;
+		newbook.appointment = 0;
+		bookList.push_back(newbook);
+		cout << "存储成功" << endl;
+	}
 	return true;
+}
+
+bool CApp::DispalyUser_bBook()
+{
+	
+		char toSrchName[20];
+		cin >> toSrchName;
+		for (list<CReader>::iterator usrlst = userList.begin(); usrlst != userList.end(); ++usrlst) {
+			if (strcmp((*usrlst).GetName(), toSrchName) == 0) {
+				cout << "检索号\t种类\t书名\t\t作者\t定价\t借阅时间\t总数" << endl;
+				for (int i = 0; i < (*usrlst).bBookList.size(); i++) {
+					cout << (*usrlst).bBookList[i].bBookId << "\t";
+					for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
+						if ((*blst).book_id == (*usrlst).bBookList[i].bBookId) {
+							cout << (*blst).kind << "\t";
+							cout << (*blst).name << "\t\t";
+							cout << (*blst).author << "\t";
+							cout << (*blst).price << "\t";
+							break;
+						}
+					}
+					cout << (*usrlst).bBookList[i].bTime.tm_year << "-" << (*usrlst).bBookList[i].bTime.tm_mon << "-" << (*usrlst).bBookList[i].bTime.tm_mday << "\t";
+					cout << (*usrlst).bBookList.size() << endl;
+					break;
+				}
+			}
+		}
+		return true;
+	
+
 }
 
 bool CApp::DisplayAllBooks()
 {
-	return false; cout << "检索号\t种类\t书名\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
+	cout << "检索号\t种类\t书名\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
 	for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
 		cout << (*blst).book_id << "\t";
 		cout << (*blst).kind << "\t";
@@ -355,6 +429,7 @@ bool CApp::DisplayAllBooks()
 		cout << (*blst).now_sum << "\t";
 		cout << (*blst).sum << endl;
 	}
+	system("pause");
 	return true;
 
 }
@@ -365,12 +440,12 @@ list<CBook>::iterator CApp::Search_BookPos_WithAB(char thebook[15], char theauth
 	{
 		if ((strcmp(thebook, (*i).name)) == 0 && (strcmp(theauthor, (*i).author) == 0))
 		{
-			cout << "找到此书" << endl;
+			//cout << "找到此书" << endl;
 			return i;
 		}
 		else
 		{
-			cout << "未找到该书" << endl;
+			//cout << "未找到该书" << endl;
 			return bookList.end();
 		}
 	}

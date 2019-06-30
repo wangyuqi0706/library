@@ -13,6 +13,7 @@ private:
 public:
 	~CApp();
 	CApp();
+	char* GetAdminName();
 	void ShowMain();
 	bool logon();
 	bool login();
@@ -23,8 +24,8 @@ public:
 	bool LoadData();
 	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
-	bool DisplayAdminMenu();
-	bool DisplayReaderMenu();
+	int DisplayAdminMenu();
+	int DisplayReaderMenu();
 	bool AddBookInfo();//添加书籍信息
 	bool DisplayOverDueUser();//显示逾期用户
 	bool RevertByAdmin();//管理员手动归还

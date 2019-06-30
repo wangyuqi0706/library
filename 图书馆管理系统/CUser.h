@@ -1,5 +1,6 @@
 #pragma once
 #include"CBook.h"
+#include<vector>
 typedef struct a
 {
 	tm bTime;//借阅时间
@@ -20,7 +21,8 @@ public:
 class CReader :public CUser
 {
 public:
-	BorrowedBook bBookList[10];//用户借书信息
+	CReader();
+	std::vector<BorrowedBook> bBookList;//用户借书
 	bool borrow(const char* bookname);
 	bool SetPhone(const char* ph);
 };
