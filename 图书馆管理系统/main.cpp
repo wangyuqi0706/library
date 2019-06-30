@@ -4,7 +4,6 @@
 #include"CApp.h"
 #include<iostream>
 using namespace std;
-CApp theApp;
 int main()
 {
 	CApp theApp;

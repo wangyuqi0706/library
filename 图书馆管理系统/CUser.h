@@ -22,9 +22,13 @@ class CReader :public CUser
 public:
 	BorrowedBook bBookList[10];//用户借书信息
 	bool borrow(const char* bookname);
+	bool SetPhone(const char* ph);
 };
 class CAdmin : public CUser
 {
 public:
 	//bool Display;
 };
+
+
+

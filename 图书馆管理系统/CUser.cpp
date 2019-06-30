@@ -32,3 +32,8 @@ char* CUser::GetPasswd()
 	return pwd;
 }
 
+bool CReader::SetPhone(const char* ph)
+{
+	strcpy(phone, ph);
+	return false;
+}

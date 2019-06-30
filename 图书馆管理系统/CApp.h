@@ -11,6 +11,7 @@ private:
 	list<CReader> userList;
 	CAdmin admin;
 public:
+	~CApp();
 	CApp();
 	void ShowMain();
 	bool logon();
@@ -31,5 +32,6 @@ public:
 	bool DisplayAllBooks();//À˘”–π›≤ÿ ÈºÆ
 	list<CBook>::iterator Search_BookPos_WithAB(char thebook[15], char theauthor[15]);
 	void DeleteBook();
+	bool SaveData();
 };
 

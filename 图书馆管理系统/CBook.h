@@ -13,6 +13,6 @@ public:
 	double price;// ÈºÆ∂®º€
 	void PrintInfo();
 	CBook(int b_id,const char* n,const char* aut,int sum,double p);
-
+	CBook() {}
 };
 

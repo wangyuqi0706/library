@@ -3,11 +3,14 @@
 #include<fstream>
 #include<conio.h>
 using namespace std;
+CApp::~CApp()
+{
+	SaveData();
+}
 CApp::CApp()
 {
-	admin.SetName("Admin");
-	admin.SetPasswd("0000");
-
+	strcpy(currentUserName, "");
+	LoadData();
 }
 void CApp::ShowMain()
 {
@@ -26,6 +29,7 @@ bool CApp::logon()
 	CReader user;
 	char tname[30] = { 0 };
 	char tpwd[20] = { 0 };
+	char phone[12] = { 0 };
 	int x = sizeof(tpwd);
 	while (1)
 	{
@@ -40,7 +44,7 @@ bool CApp::logon()
 			continue;
 		}
 		cout << "输入电话号码：";
-		char phone[12];
+		
 		cin >> phone;
 		cout << "输入密码：";
 		inputPassword(tpwd);
@@ -68,6 +72,7 @@ bool CApp::logon()
 	system("pause");
 	user.SetName(tname);
 	user.SetPasswd(tpwd);
+	user.SetPhone(phone);
 	userList.push_back(user);
 	return true;
 }
@@ -92,7 +97,7 @@ bool CApp::login()
 		inputPassword(tpasswd);
 		if (strcmp(tname, admin.GetName()) == 0 && strcmp(tpasswd, admin.GetPasswd())==0)
 		{
-			cout << "登陆成功" << endl;
+			cout << "登录成功" << endl;
 				strcpy(currentUserName, tname);
 				system("pause");
 				return true;
@@ -101,7 +106,7 @@ bool CApp::login()
 
 		if (strcmp(tpasswd, (*i).GetPasswd()) == 0)
 		{
-			cout << "登陆成功" << endl;
+			cout << "登录成功" << endl;
 			strcpy(currentUserName, tname);
 			system("pause");
 			return true;
@@ -208,14 +213,30 @@ bool CApp::DisplayFirstPage()
 
 bool CApp::LoadData()
 {
-	fstream fp("data.dat", ios::in | ios::binary);
+	fstream fp;
+	fp.open("user_data.dat", ios::in | ios::binary);
 	if (fp.is_open() == false)
 	{
-		fp.open("data.dat", ios::out | ios::binary);
+		fp.open("user_data.dat", ios::out | ios::binary);
 		fp.close();
-		fp.open("data.dat", ios::in | ios::binary);
+		fp.open("user_data.dat", ios::in | ios::binary);
 	}
+	CReader s;
+	while (fp.read((char*)& s, sizeof(s)))
+		userList.push_back(s);
+	fp.close();
 
+	fp.open("book_data.dat", ios::in | ios::binary);
+	if (fp.is_open() == false)
+	{
+		fp.open("book_data.dat", ios::out | ios::binary);
+		fp.close();
+		fp.open("book_data.dat", ios::in | ios::binary);
+	}
+	CBook b;
+	while (fp.read((char*)& b, sizeof(b)))
+		bookList.push_back(b);
+	fp.close();
 	return false;
 }
 
@@ -371,4 +392,23 @@ void CApp::DeleteBook()
 	{
 		cout << "不存在该书，无法删除。" << endl;
 	}
+}
+
+
+bool CApp::SaveData()
+{
+	fstream fp;
+	fp.open("user_data.dat", ios::binary | ios::out);
+	for (auto i = userList.begin(); i != userList.end(); i++)
+	{
+		fp.write((char*) & (*i), sizeof(CReader));
+	}
+	fp.close();
+	fp.open("book_data.dat", ios::binary | ios::out);
+	for (auto i = userList.begin(); i != userList.end(); i++)
+	{
+		fp.write((char*) & (*i), sizeof(CBook));
+	}
+	fp.close();
+	return true;
 }
