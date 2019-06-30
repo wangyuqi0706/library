@@ -2,6 +2,7 @@
 #include"CBook.h"
 #include"CUser.h"
 #include<list>
+#include<iomanip>
 using namespace std;
 class CApp
 {
@@ -22,6 +23,7 @@ public:
 	void inputPassword(char* passwd);
 	int DisplayFirstPage();
 	bool LoadData();
+	void BorrowBook(CReader a);
 	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
 	int DisplayAdminMenu();
@@ -35,5 +37,6 @@ public:
 	list<CBook>::iterator Search_BookPos_WithAB(char thebook[50], char theauthor[50]);
 	void DeleteBook();
 	bool SaveData();
+	void printfbook(std::list<CBook>::iterator);
 };
 

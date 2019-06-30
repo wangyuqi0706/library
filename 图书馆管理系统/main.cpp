@@ -11,9 +11,9 @@ using namespace std;
 int main()
 {
 	CApp theApp;
+mainmeun:
 	while (1)
 	{
-	mainmeun:
 		auto a = theApp.DisplayFirstPage();
 		if (a == QUIT)
 			return 0;
@@ -39,9 +39,14 @@ int main()
 		while (1)
 		{
 			auto a = theApp.DisplayReaderMenu();
-			if (a < 0) return 0;
-			else if (a == 0) break;
-			else continue;
+			if (a == QUIT)
+				return 0;
+			else if (a == NEXT)
+				break;
+			else if (a == STAY)
+				continue;
+			else if (a == LOGOUT)
+				goto mainmeun;
 		}
 
 	return 0;
