@@ -2,6 +2,10 @@
 #include<iostream>
 #include<fstream>
 #include<conio.h>
+#define QUIT -1
+#define NEXT 1
+#define STAY 0
+#define LOGOUT 2
 using namespace std;
 CApp::~CApp()
 {
@@ -210,13 +214,14 @@ int CApp::DisplayFirstPage()
 	{
 	case '1':
 		if (login() == true)
-			return 0;
+			return NEXT;
 		break;
 	case '2':
 		logon();
+		return STAY;
 		break;
 	case '0':
-		return -1;
+		return QUIT;
 		break;
 	default:
 		cout << "请输入正确的指令" << endl;
@@ -285,6 +290,7 @@ int CApp::DisplayAdminMenu()
 	cout << "                               3.修改书籍库存" << endl;
 	cout << "                               4.逾期未还查询" << endl;
 	cout << "                               5.显示所有书籍信息" << endl;
+	cout << "                               6.退出登录" << endl;
 
 	cout << "                               0.退出" << endl;
 	cout << "输入序号选择功能：";
@@ -294,23 +300,30 @@ int CApp::DisplayAdminMenu()
 	{
 	case 1:
 		AddBookInfo();
+		return STAY;
 		break;
 	case 2:
 		DeleteBook();
+		return STAY;
 		break;
 	case 3:
+		return STAY;
 		break;
 	case 4:
+		return STAY;
 		break;
 	case 5:
 		DisplayAllBooks();
+		return STAY;
 		break;
 	case 6:
+		return LOGOUT;
 		break;
 	case 7:
+		return STAY;
 		break;
 	case 0:
-		return -1;
+		return QUIT;
 	default:
 		break;
 	}
@@ -356,32 +369,37 @@ int CApp::DisplayReaderMenu()
 bool CApp::AddBookInfo()
 {
 
-	char name[15], kind[15], author[15];
+	char name[50], kind[50], author[20];
+	cout << "请输入要添加的书名、作者" << endl;
+	cin >> name;
+	cin >> author;
 	auto i = Search_BookPos_WithAB(name, author);
-	if (i != bookList.end())//已存在该书
-	{
-		cout << "您输入的书籍已存在，请去修改书籍数量。" << endl;
-	}
-	else//如果没有该书
+
+	
+	if(i==bookList.end()||bookList.size()==0)//如果没有该书
 	{
 		CBook newbook;
 		int sum;
 		cout << "请输入图书检索号：" << endl;
 		cin >> newbook.book_id;
 		cout << "请输入图书总库存存量：" << endl;
-		cin >> sum;
+		cin >> newbook.sum;
 		cout << "请输入图书种类：" << endl;
 		cin >> newbook.kind;
-		cout << "请输入图书书名：" << endl;
-		cin >> newbook.name;
-		cout << "请输入图书作者：" << endl;
-		cin >> newbook.author;
+		//cout << "请输入图书书名：" << endl;
+		strcpy(newbook.name, name);
+		//cout << "请输入图书作者：" << endl;
+		strcpy(newbook.author, author);
 		cout << "请输入图书书籍定价：" << endl;
 		cin >> newbook.price;
 		newbook.now_sum = newbook.sum;
 		newbook.appointment = 0;
 		bookList.push_back(newbook);
 		cout << "存储成功" << endl;
+	}
+	else
+	{
+			cout << "您输入的书籍已存在，请去修改书籍数量。" << endl;
 	}
 	return true;
 }
@@ -420,11 +438,11 @@ bool CApp::DispalyUser_bBook()
 
 bool CApp::DisplayAllBooks()
 {
-	cout << "检索号\t种类\t书名\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
+	cout << "检索号\t种类\t书名\t\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
 	for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
 		cout << (*blst).book_id << "\t";
 		cout << (*blst).kind << "\t";
-		cout << (*blst).name << "\t\t";
+		cout << (*blst).name << "\t\t\t";
 		cout << (*blst).author << "\t";
 		cout << (*blst).price << "\t";
 		cout << (*blst).appointment << "\t";
@@ -446,7 +464,7 @@ list<CBook>::iterator CApp::FindBook(int bookid)
 
 }
 
-list<CBook>::iterator CApp::Search_BookPos_WithAB(char thebook[15], char theauthor[15])
+list<CBook>::iterator CApp::Search_BookPos_WithAB(char thebook[50], char theauthor[50])
 {
 	for (auto i = bookList.begin(); i != bookList.end(); i++)
 	{
@@ -458,9 +476,9 @@ list<CBook>::iterator CApp::Search_BookPos_WithAB(char thebook[15], char theauth
 		else
 		{
 			//cout << "未找到该书" << endl;
-			return bookList.end();
 		}
 	}
+	return bookList.end();
 }
 
 void CApp::DeleteBook()
