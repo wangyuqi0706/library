@@ -274,7 +274,7 @@ bool CApp::LoadData()
 	return false;
 }
 
-void CApp::BorrowBook(CReader a)
+void CApp::BorrowBook(CReader &a)
 {
 	int x = 0;
 	for (int i = 0; i < 10; i++)
@@ -288,12 +288,14 @@ void CApp::BorrowBook(CReader a)
 	if (y != 0)
 	{
 		cout << "您有滞纳金未缴纳！请缴纳后再借书。" << endl;
+		system("pause");
 	}
 	else
 	{
 		if (x >= 10)
 		{
 			cout << "您同时最多只能同时借10本书！" << endl;
+			system("pause");
 		}
 		else
 		{
@@ -305,12 +307,14 @@ void CApp::BorrowBook(CReader a)
 			if (i == bookList.end())
 			{
 				cout << "您输入的检索号有误！" << endl;
+				system("pause");
 			}
 			else
 			{
 				if ((*i).now_sum == 0)
 				{
 					cout << "该书已全部外借！" << endl;
+					system("pause");
 				}
 				else
 				{
@@ -325,6 +329,7 @@ void CApp::BorrowBook(CReader a)
 					if (d > 0)
 					{
 						cout << "您已借阅该书，请勿重复借阅" << endl;
+						system("pause");
 					}
 					else
 					{
@@ -344,6 +349,7 @@ void CApp::BorrowBook(CReader a)
 						}
 						(*i).now_sum--;
 						cout << "您已成功借阅 《" << (*i).name << "》 !" << endl;
+						system("pause");
 					}
 				}
 			}
@@ -380,41 +386,46 @@ int CApp::DisplayAdminMenu()
 	cout << "                               3.修改书籍库存" << endl;
 	cout << "                               4.逾期未还查询" << endl;
 	cout << "                               5.显示所有书籍信息" << endl;
-	cout << "                               6.退出登录" << endl;
+	cout << "                               6.手动归还" << endl;
+	cout << "                               7.退出登录" << endl;
 	cout << "                               0.退出" << endl;
 	cout << "输入序号选择功能：";
-	int key;
+	char key;
 	cin >> key;
 	switch (key)
 	{
-	case 1:
+	case '1':
 		AddBookInfo();
 		return STAY;
 		break;
-	case 2:
+	case'2':
 		DeleteBook();
 		return STAY;
 		break;
-	case 3:
+	case'3':
 		RevertByAdmin();
 		return STAY;
 		break;
-	case 4:
+	case '4':
 		return STAY;
 		break;
-	case 5:
+	case '5':
 		DisplayAllBooks();
 		return STAY;
 		break;
-	case 6:
-		return LOGOUT;
-		break;
-	case 7:
+	case '6':
+		AdminReturnBook();
 		return STAY;
 		break;
-	case 0:
+	case '7':
+		return LOGOUT;
+		break;
+	case '0':
 		return QUIT;
 	default:
+		cout << "请输入正确的指令" << endl;
+		system("pause");
+		return STAY;
 		break;
 	}
 	return 1;
@@ -438,28 +449,89 @@ int CApp::DisplayReaderMenu()
 	{
 	case 1:
 	{
-		//cout << "输入要借的书名、作者" << endl;
-		//char name[50], author[50];
-		//cin >> name;
-		//cin >> author;
 		BorrowBook(*FindUser(currentUserName));
+		return STAY;
 		break;
 	}
 	case 2:
+		DisplayUser_bBook(currentUserName);
+		return STAY;
 		break;
 	case 3:
 		break;
 	case 4:
-		break;
-	case 5:
+		DisplayAllBooks();
+		return STAY;
 		break;
 	case 0:
-		return false;
+		return QUIT;
 		break;
 	default:
+		cout << "请输入正确的指令" << endl;
+		system("pause");
+		return STAY;
 		break;
 	}
 	return 1;
+}
+
+void CApp::Search_BookPos_WithKind(char Kind[15])
+{
+	cout << "图书馆主要类型有工科，理科，医学，农学，艺术，人文。" << endl;
+	int num = 0;
+	for (auto i = bookList.begin(); i != bookList.end(); i++)
+	{
+		cout << "检索号\t种类\t书名\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
+		if ((strcmp(Kind, (*i).kind)) == 0)
+		{
+			num++;
+			printfbook(i);
+		}
+	}
+	if (num == 0)
+	{
+		cout << "抱歉，图书馆未找到该类型的书籍。" << endl;
+	}
+	else
+	{
+		cout << "以为您检索到" << num << "本该类型书籍" << endl;
+	}
+
+}
+
+void CApp::AdminReturnBook()
+{
+	bool exam = false;
+	cout << "请输入用户名和归还的索书号" << endl;
+	char userid[50];
+	int bookid;
+	cin >> userid >> bookid;
+	auto reader = FindUser(userid);
+	if (reader == userList.end())
+	{
+		cout << "未找到该用户！" << endl;
+		system("pause");
+	}
+	else
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			if (((*reader).bBookList[j]).bBookId == bookid)//遍历借书数组
+			{
+				auto book = FindBook(bookid);
+				(*book).now_sum++;//改变书籍剩余数量
+				((*reader).bBookList[j]).bBookId = 0;//改变用户借书情况
+				exam = true;
+				cout << "还书成功" << endl;
+				system("pause");
+			}
+		}
+		if (exam == false)
+		{
+			cout << "该用户并未借阅此书籍" << endl;
+			system("pause");
+		}
+	}
 }
 
 bool CApp::AddBookInfo()
@@ -515,10 +587,18 @@ bool CApp::AddBookInfo()
 
 bool CApp::RevertByAdmin()
 {
+	cout << "请输入修改的图书检索号" << endl;
+	int a;
+	cin >> a;
+	auto i = FindBook(a);
+	if (i == bookList.end())
+	{
+
+	}
 	return false;
 }
 
-bool CApp::DispalyUser_bBook()
+bool CApp::DisplayUser_bBook()
 {
 	char toSrchName[20];
 	int cnt = 0;
@@ -553,6 +633,41 @@ bool CApp::DispalyUser_bBook()
 		}
 	}
 	return true;
+}
+
+bool CApp::DisplayUser_bBook(const char * toSrchName)
+{
+	int cnt = 0;
+	for (list<CReader>::iterator usrlst = userList.begin(); usrlst != userList.end(); ++usrlst) {
+		if (strcmp((*usrlst).GetName(), toSrchName) == 0) {
+			cout << setw(12) << left << "检索号";
+			cout << setw(12) << left << "种类";
+			cout << setw(30) << left << "书名";
+			cout << setw(12) << left << "作者";
+			cout << setw(12) << left << "定价";
+			cout << "借阅时间" << endl;
+			for (int i = 0; i < 10; i++) {
+				if ((*usrlst).bBookList[i].bBookId != 0) {
+					cnt++;
+					cout << setw(12) << left << (*usrlst).bBookList[i].bBookId;
+					for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
+						if ((*blst).book_id == (*usrlst).bBookList[i].bBookId) {
+							cout << setw(12) << left << (*blst).kind;
+							cout << setw(30) << left << (*blst).name;
+							cout << setw(12) << left << (*blst).author;
+							cout << setw(12) << left << (*blst).price;
+							break;
+						}
+					}
+					cout << (*usrlst).bBookList[i].bTime.tm_year+1900 << "-" << (*usrlst).bBookList[i].bTime.tm_mon+1 << "-" << (*usrlst).bBookList[i].bTime.tm_mday << "\t" << endl;;
+				}
+			}
+			cout << "借阅总数：" << cnt << " 本" << endl;
+			break;
+		}
+	}
+	system("pause");
+	return false;
 }
 
 bool CApp::DisplayAllBooks()

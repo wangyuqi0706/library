@@ -23,15 +23,20 @@ public:
 	void inputPassword(char* passwd);
 	int DisplayFirstPage();
 	bool LoadData();
-	void BorrowBook(CReader a);
+	void BorrowBook(CReader &a);
 	list<CReader>::iterator FindUser(const char* n);
 	char* GetCurUserName();
 	int DisplayAdminMenu();
 	int DisplayReaderMenu();
+	void Search_BookPos_WithKind(char Kind[15]);//检索出图书馆所有同类型书籍
+	void AdminReturnBook();//还书
+
+
 	bool AddBookInfo();//添加书籍信息
 	bool DisplayOverDueUser();//显示逾期用户
 	bool RevertByAdmin();//管理员手动归还
-	bool DispalyUser_bBook();//显示某用户所借图书
+	bool DisplayUser_bBook();//显示某用户所借图书
+	bool DisplayUser_bBook(const char * toSrchName);
 	bool DisplayAllBooks();//所有馆藏书籍
 	list<CBook>::iterator FindBook(int bookid);
 	list<CBook>::iterator Search_BookPos_WithAB(char thebook[50], char theauthor[50]);
