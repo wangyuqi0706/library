@@ -14,6 +14,7 @@ private:
 public:
 	~CApp();
 	CApp();
+	void DisplayOverDueBook(const CReader &a);
 	char* GetAdminName();
 	void ShowMain();
 	bool logon();
@@ -21,6 +22,7 @@ public:
 	bool isFindUser(const char* name);
 	bool isPwdRight(const char* pwd);
 	void inputPassword(char* passwd);
+	bool DisplayAllOverDueUser();
 	int DisplayFirstPage();
 	bool LoadData();
 	void BorrowBook(CReader &a);
@@ -33,7 +35,6 @@ public:
 
 
 	bool AddBookInfo();//添加书籍信息
-	bool DisplayOverDueUser();//显示逾期用户
 	bool RevertByAdmin();//管理员手动归还
 	bool DisplayUser_bBook();//显示某用户所借图书
 	bool DisplayUser_bBook(const char * toSrchName);

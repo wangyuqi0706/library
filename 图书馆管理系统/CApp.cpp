@@ -19,6 +19,41 @@ CApp::CApp()
 	strcpy(currentUserName, "");
 	LoadData();
 }
+void CApp::DisplayOverDueBook(const CReader& a)
+{
+	int x = a.HasPenalty;
+	if (x != 1)
+	{
+		cout << "无逾期书籍！" << endl;
+	}
+	else
+	{
+		time_t now_time = time(NULL);//获取系统时间
+		tm* t_tm = localtime(&now_time);
+		int num = 0;
+		for (int i = 0; i < 10; i++)
+		{
+			if (t_tm->tm_year > a.bBookList[i].bTime.tm_year)//是否有逾期未还
+			{
+				int daynum = t_tm->tm_yday + (365 - a.bBookList[i].bTime.tm_yday);
+				if (daynum > 30)
+				{
+					list<CBook>::iterator it = FindBook(a.bBookList[i].bBookId);
+					printfbook(it);
+				}
+			}
+			else
+			{
+				if (t_tm->tm_yday - a.bBookList[i].bTime.tm_yday > 30)//是否有逾期未还
+				{
+					list<CBook>::iterator it = FindBook(a.bBookList[i].bBookId);
+					printfbook(it);
+				}
+			}
+		}
+	}
+
+}
 char* CApp::GetAdminName()
 {
 	return admin.GetName();
@@ -216,6 +251,49 @@ void CApp::inputPassword(char* passwd)
 	cout << endl;
 }
 
+bool CApp::DisplayAllOverDueUser()
+{
+	cout << "*****************************************************************************************************" << endl;
+	for (list<CReader>::iterator usrlst = userList.begin(); usrlst != userList.end(); ++usrlst) {
+		if ((*usrlst).HasPenalty() == 1) {
+			
+			cout << "用户：" << (*usrlst).GetName() << endl;
+			cout << "逾期书单：" << endl;
+			cout << "\t" << setw(12) << left << "检索号";
+			cout << setw(12) << left << "种类";
+			cout << setw(30) << left << "书名";
+			cout << setw(12) << left << "作者";
+			cout << setw(12) << left << "定价";
+			cout << "借阅时间" << endl;
+			time_t now_time = time(NULL);
+			for (int i = 0; i < 10; i++) {
+				tm* b_time;
+				b_time = &(*usrlst).bBookList[i].bTime;
+				time_t borrow_time = mktime(b_time);
+				if ((*usrlst).bBookList[i].bBookId != 0 && now_time - borrow_time > 2592000) {
+					cout << "\t" << setw(12) << left << (*usrlst).bBookList[i].bBookId;
+					for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
+						if ((*blst).book_id == (*usrlst).bBookList[i].bBookId) {
+							cout << setw(12) << left << (*blst).kind;
+							cout << setw(30) << left << (*blst).name;
+							cout << setw(12) << left << (*blst).author;
+							cout << setw(12) << left << (*blst).price;
+							break;
+						}
+					}
+					cout << (*usrlst).bBookList[i].bTime.tm_year + 1900 << "-" << (*usrlst).bBookList[i].bTime.tm_mon + 1 << "-" << (*usrlst).bBookList[i].bTime.tm_mday << endl;
+				}
+			}
+			
+
+		}
+	}
+	cout << "*****************************************************************************************************" << endl << endl;
+	system("pause");
+	return true;
+
+}
+
 
 int CApp::DisplayFirstPage()
 {
@@ -407,6 +485,7 @@ int CApp::DisplayAdminMenu()
 		return STAY;
 		break;
 	case '4':
+		DisplayAllOverDueUser();
 		return STAY;
 		break;
 	case '5':
@@ -441,6 +520,7 @@ int CApp::DisplayReaderMenu()
 	cout << "                               2.查询已借阅书籍" << endl;
 	cout << "                               3.滞纳金查询" << endl;
 	cout << "                               4.书籍查询" << endl;
+	cout << "                               5.逾期书籍查询" << endl;
 	cout << "                               0.退出" << endl;
 	cout << "输入序号选择功能：";
 	int key;
@@ -463,6 +543,8 @@ int CApp::DisplayReaderMenu()
 		DisplayAllBooks();
 		return STAY;
 		break;
+	case 5:
+		DisplayOverDueBook(*FindUser(currentUserName));
 	case 0:
 		return QUIT;
 		break;
@@ -593,7 +675,31 @@ bool CApp::RevertByAdmin()
 	auto i = FindBook(a);
 	if (i == bookList.end())
 	{
-
+		cout << "未找到该图书" << endl;
+		system("pause");
+	}
+	else
+	{
+		cout << "当前总库存：" << (*i).sum;
+		cout << "当前借出量" << (*i).sum - (*i).now_sum << endl;
+		cout << "输入新的库存量:";
+		int nSum;
+		while (1)
+		{
+			cin >> nSum;
+			if (nSum < (*i).sum - (*i).now_sum)
+			{
+				cout << "总库存不能小于借出量！重新输入：";
+			}
+			else
+			{
+				cout << "修改库存成功！现在库存为:" << nSum << endl;
+				(*i).now_sum = nSum - ((*i).sum - (*i).now_sum);
+				(*i).sum = nSum;
+				system("pause");
+				return true;
+			}
+		}
 	}
 	return false;
 }
