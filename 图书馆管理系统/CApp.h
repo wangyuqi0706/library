@@ -11,6 +11,7 @@ private:
 	list<CReader> userList;
 	CAdmin admin;
 public:
+	~CApp();
 	CApp();
 	void ShowMain();
 	bool logon();
@@ -29,5 +30,13 @@ public:
 	bool RevertByAdmin();//管理员手动归还
 	bool DispalyUser_bBook();//显示某用户所借图书
 	bool DisplayAllBooks();//所有馆藏书籍
+	void AddBook(CBook NewBook);  //增加图书
+	void DeleteBook();//删除图书
+	bool ReviseBook(char name[15], char author[15]);//修改某本书的信息
+	void PrintBook(CBook a);//输出某本书的所有信息
+	void ShowAllBooks(); //输出系统所有图书
+	list<CBook>::iterator Search_BookPos_WithAB(char thebook[15], char theauthor[15]);
+
+	void SaveData();
 };
 

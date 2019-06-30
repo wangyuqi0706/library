@@ -13,8 +13,8 @@ public:
 	char name[50];//书名
 	char author[50];//作者
 	double price;//书籍定价
-	void PrintInfo();
-	CBook(int b_id,const char* n,const char* aut,int sum,double p);
+	CBook(int b_id,const char* n,const char* aut,int sum,double p,const char* k);
+	CBook(){}
 
 };
 

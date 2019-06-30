@@ -4,15 +4,16 @@
 #include"CApp.h"
 #include<iostream>
 using namespace std;
-CApp theApp;
 int main()
 {
+	cout << sizeof(CReader) << endl;
 	CApp theApp;
 	while (theApp.DisplayFirstPage() == true);
 	if (strcmp(theApp.GetCurUserName(), "Admin") == 0)
 		while (theApp.DisplayAdminMenu() == true);
 	else
 		while (theApp.DisplayReaderMenu() == true);
+
 
 	return 0;
 }

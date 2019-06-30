@@ -30,3 +30,13 @@ char* CUser::GetPasswd()
 	// TODO: 在此处添加实现代码.
 	return pwd;
 }
+
+void CAdmin::ReviseBook(char name[15], char author[15])
+{
+}
+
+CReader::CReader()
+{
+	bBookList.resize(10);
+	bBookList.max_size();
+}
