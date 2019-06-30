@@ -34,11 +34,16 @@ char* CUser::GetPasswd()
 
 CReader::CReader()
 {
-	bBookList.resize(10);
+	
 }
 
 bool CReader::SetPhone(const char* ph)
 {
 	strcpy(phone, ph);
 	return false;
+}
+
+int CReader::HasPenalty()
+{
+	return 0;
 }

@@ -224,7 +224,7 @@ int CApp::DisplayFirstPage()
 		return 1;
 		break;
 	}
-	return true;// TODO: 在此处添加实现代码.
+	return 1;// TODO: 在此处添加实现代码.
 }
 
 
@@ -350,7 +350,7 @@ int CApp::DisplayReaderMenu()
 	default:
 		break;
 	}
-	return false;
+	return 1;
 }
 
 bool CApp::AddBookInfo()
@@ -388,13 +388,15 @@ bool CApp::AddBookInfo()
 
 bool CApp::DispalyUser_bBook()
 {
-	
-		char toSrchName[20];
-		cin >> toSrchName;
-		for (list<CReader>::iterator usrlst = userList.begin(); usrlst != userList.end(); ++usrlst) {
-			if (strcmp((*usrlst).GetName(), toSrchName) == 0) {
-				cout << "检索号\t种类\t书名\t\t作者\t定价\t借阅时间\t总数" << endl;
-				for (int i = 0; i < (*usrlst).bBookList.size(); i++) {
+	char toSrchName[20];
+	int cnt = 0;
+	cin >> toSrchName;
+	for (list<CReader>::iterator usrlst = userList.begin(); usrlst != userList.end(); ++usrlst) {
+		if (strcmp((*usrlst).GetName(), toSrchName) == 0) {
+			cout << "检索号\t种类\t书名\t\t作者\t定价\t借阅时间" << endl;
+			for (int i = 0; i < 10; i++) {
+				if ((*usrlst).bBookList[i].bBookId != 0) {
+					cnt++;
 					cout << (*usrlst).bBookList[i].bBookId << "\t";
 					for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
 						if ((*blst).book_id == (*usrlst).bBookList[i].bBookId) {
@@ -406,13 +408,13 @@ bool CApp::DispalyUser_bBook()
 						}
 					}
 					cout << (*usrlst).bBookList[i].bTime.tm_year << "-" << (*usrlst).bBookList[i].bTime.tm_mon << "-" << (*usrlst).bBookList[i].bTime.tm_mday << "\t";
-					cout << (*usrlst).bBookList.size() << endl;
-					break;
 				}
 			}
+			cout << "借阅总数：" << cnt << " 本" << endl;
+			break;
 		}
-		return true;
-	
+	}
+	return true;
 
 }
 
@@ -431,6 +433,16 @@ bool CApp::DisplayAllBooks()
 	}
 	system("pause");
 	return true;
+
+}
+
+list<CBook>::iterator CApp::FindBook(int bookid)
+{
+	for (auto i = bookList.begin(); i != bookList.end(); i++)
+	{
+		if ((*i).book_id == bookid)
+			return i;
+	}
 
 }
 
@@ -473,16 +485,18 @@ void CApp::DeleteBook()
 bool CApp::SaveData()
 {
 	fstream fp;
+	CReader r;
+	CBook b;
 	fp.open("user_data.dat", ios::binary | ios::out);
 	for (auto i = userList.begin(); i != userList.end(); i++)
 	{
-		fp.write((char*) & (*i), sizeof(CReader));
+		fp.write((char*) & (*i), sizeof(r));
 	}
 	fp.close();
 	fp.open("book_data.dat", ios::binary | ios::out);
 	for (auto i = userList.begin(); i != userList.end(); i++)
 	{
-		fp.write((char*) & (*i), sizeof(CBook));
+		fp.write((char*) & (*i), sizeof(b));
 	}
 	fp.close();
 	return true;

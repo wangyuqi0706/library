@@ -26,7 +26,13 @@ int main()
 			else continue;
 		}
 	else
-		while (theApp.DisplayReaderMenu() == true);
+		while (1)
+		{
+			auto a = theApp.DisplayReaderMenu();
+			if (a < 0) return 0;
+			else if (a == 0) break;
+			else continue;
+		}
 
 	return 0;
 }

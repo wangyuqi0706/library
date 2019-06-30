@@ -4,7 +4,7 @@
 typedef struct a
 {
 	tm bTime;//借阅时间
-	int bBookId;//
+	int bBookId=0;//
 }BorrowedBook;
 class CUser
 {
@@ -22,9 +22,9 @@ class CReader :public CUser
 {
 public:
 	CReader();
-	std::vector<BorrowedBook> bBookList;//用户借书
-	bool borrow(const char* bookname);
+	BorrowedBook bBookList[10];//用户借书
 	bool SetPhone(const char* ph);
+	int HasPenalty();// 返回0，则无滞纳金；返回1，有滞纳金，且有逾期书籍未还；返回2，有滞纳金，且可查询
 };
 class CAdmin : public CUser
 {

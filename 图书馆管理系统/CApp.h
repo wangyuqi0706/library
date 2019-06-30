@@ -31,6 +31,7 @@ public:
 	bool RevertByAdmin();//管理员手动归还
 	bool DispalyUser_bBook();//显示某用户所借图书
 	bool DisplayAllBooks();//所有馆藏书籍
+	list<CBook>::iterator FindBook(int bookid);
 	list<CBook>::iterator Search_BookPos_WithAB(char thebook[15], char theauthor[15]);
 	void DeleteBook();
 	bool SaveData();
