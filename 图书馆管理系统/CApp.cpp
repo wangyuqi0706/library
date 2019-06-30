@@ -321,7 +321,54 @@ bool CApp::AddBookInfo()
 	return true;
 }
 
-bool CApp::AddBookInfo()
+bool CApp::DisplayAllBooks()
 {
-	return false;
+	return false; cout << "检索号\t种类\t书名\t\t作者\t定价\t预约量\t现库存量\t总库存量" << endl;
+	for (list<CBook>::iterator blst = bookList.begin(); blst != bookList.end(); ++blst) {
+		cout << (*blst).book_id << "\t";
+		cout << (*blst).kind << "\t";
+		cout << (*blst).name << "\t\t";
+		cout << (*blst).author << "\t";
+		cout << (*blst).price << "\t";
+		cout << (*blst).appointment << "\t";
+		cout << (*blst).now_sum << "\t";
+		cout << (*blst).sum << endl;
+	}
+	return true;
+
+}
+
+list<CBook>::iterator CApp::Search_BookPos_WithAB(char thebook[15], char theauthor[15])
+{
+	for (auto i = bookList.begin(); i != bookList.end(); i++)
+	{
+		if ((strcmp(thebook, (*i).name)) == 0 && (strcmp(theauthor, (*i).author) == 0))
+		{
+			cout << "找到此书" << endl;
+			return i;
+		}
+		else
+		{
+			cout << "未找到该书" << endl;
+			return bookList.end();
+		}
+	}
+}
+
+void CApp::DeleteBook()
+{
+	char bookname[15];
+	char author[15];
+	cout << "请输入书名与作者！" << endl;
+	cin >> bookname >> author;
+	auto i = Search_BookPos_WithAB(bookname, author);
+	if (i != bookList.end())
+	{
+		bookList.erase(i);
+		cout << "删除此书成功！" << endl;
+	}
+	else
+	{
+		cout << "不存在该书，无法删除。" << endl;
+	}
 }

@@ -1,6 +1,7 @@
 #include "CUser.h"
 #include<iostream>
 #include<cstring>
+#include"CBook.h"
 using namespace std;
 
 void CUser::SetName(const char* n)
@@ -30,3 +31,4 @@ char* CUser::GetPasswd()
 	// TODO: 在此处添加实现代码.
 	return pwd;
 }
+
