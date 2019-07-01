@@ -569,6 +569,7 @@ void CApp::RevertByAdmin(CReader a)
 			a.bBookList[d].bBookId = 0;//还书
 			a.CalPenalty(id_num); //计算滞纳金
 			(*i).sum--;
+			(*i).now_sum--;
 			if ((*i).sum == 0)//若该书馆藏为0，则删除该书
 			{
 				bookList.erase(i);
