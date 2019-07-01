@@ -19,6 +19,7 @@ public:
 	char* GetAdminName();
 	void ShowMain();
 	void ReturnBook(CReader& a);
+	void LostReturnBook(); //ÒÅÊ§¹é»¹º¬ÖÍÄÉ½ğ¼ÆËã
 
 	bool logon();
 	bool login();

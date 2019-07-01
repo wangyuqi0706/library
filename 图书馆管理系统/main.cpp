@@ -4,17 +4,17 @@
 #include"CApp.h"
 #include<iostream>
 using namespace std;
-#define QUIT -1
-#define NEXT 1
-#define STAY 0
-#define LOGOUT 2
+constexpr auto QUIT = -1;
+constexpr auto NEXT = 1;
+constexpr auto STAY = 0;
+constexpr auto LOGOUT = 2;
 int main()
 {
-	CApp theApp;
+	CApp theApp;//应用程序类
 mainmeun:
 	while (1)
 	{
-		auto a = theApp.DisplayFirstPage();
+		auto a = theApp.DisplayFirstPage();//登录、注册页面
 		if (a == QUIT)
 			return 0;
 		else if (a == NEXT)
@@ -22,10 +22,10 @@ mainmeun:
 		else if (a == STAY)
 			continue;
 	}
-	if (strcmp(theApp.GetCurUserName(), theApp.GetAdminName()) == 0)
+	if (strcmp(theApp.GetCurUserName(), theApp.GetAdminName()) == 0)//判断是否为管理员
 		while (1)
 		{
-			auto a = theApp.DisplayAdminMenu();
+			auto a = theApp.DisplayAdminMenu();//管理员页面
 			if (a == QUIT)
 				return 0;
 			else if (a == NEXT)
@@ -38,7 +38,7 @@ mainmeun:
 	else
 		while (1)
 		{
-			auto a = theApp.DisplayReaderMenu();
+			auto a = theApp.DisplayReaderMenu();//读者页面
 			if (a == QUIT)
 				return 0;
 			else if (a == NEXT)

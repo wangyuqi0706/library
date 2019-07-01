@@ -1,8 +1,8 @@
+constexpr auto QUIT = -1;
+constexpr auto NEXT = 1;
+constexpr auto STAY = 0;
+constexpr auto LOGOUT = 2;
 #include "CApp.h"
-#define QUIT -1
-#define NEXT 1
-#define STAY 0
-#define LOGOUT 2
 #include<iostream>
 #include<fstream>
 #include<conio.h>
@@ -168,11 +168,11 @@ void CApp::ReturnBook(CReader& a)
 		if (a.bBookList[i].bBookId == id_num)
 		{
 			exam = true;
-			a.CalPenalty(id_num);
+			a.CalPenalty(a.bBookList[i].bBookId);//计算滞纳金
 			a.bBookList[i].bBookId = 0;
 			auto book = FindBook(id_num);
 			(*book).now_sum++;//改变书籍剩余数量
-			cout << "您已成功归还《" << (*FindBook(id_num)).name << "》" << endl;
+			cout << "还书成功" << endl;
 			system("pause");
 			break;
 		}
@@ -181,6 +181,81 @@ void CApp::ReturnBook(CReader& a)
 	{
 		cout << "您并未借阅此书籍" << endl;
 		system("pause");
+	}
+}
+
+void CApp::LostReturnBook()
+{
+	bool exam = false;
+	system("cls");
+	cout << "请输入用户名：";
+	char userid[50];
+	cin >> userid;
+	auto reader = FindUser(userid);
+	if (reader == userList.end())
+	{
+		cout << "未找到该用户！" << endl;
+		system("pause");
+	}
+	else
+	{
+		bool borrowedbook = false;
+		for (int x = 0; x < 10; x++)
+		{
+			if ((*reader).bBookList[x].bBookId != 0)
+			{
+				borrowedbook = true;
+				break;
+			}
+		}
+		if (borrowedbook == false)
+		{
+			cout << "该用户暂未借阅书籍！" << endl;
+			system("pause");
+		}
+		else
+		{
+			cout << "请输入遗失书籍名及作者（若遗忘则输入两次0）：" << endl;
+			char author[15], name[15];
+			cin >> name >> author;
+			if (strcmp(author, "0") == 0 && strcmp(name, "0") == 0)
+			{
+				system("cls");
+				DisplayUser_bBook(userid);
+				cout << "请输入遗失书籍名及作者：" << endl;
+				cin >> name >> author;
+			}
+			list<CBook>::iterator i = Search_BookPos_WithAB(name, author);
+			if (i == bookList.end())
+			{
+				cout << "馆内无该书！" << endl;
+				system("pause");
+			}
+			else
+			{
+				for (int j = 0; j < 10; j++)
+				{
+					if (((*reader).bBookList[j]).bBookId == (*i).book_id)//遍历借书数组
+					{
+						(*i).sum--;//改变书籍剩余数量
+						(*reader).CalPenalty((*i).book_id);//计算滞纳金
+						((*reader).bBookList[j]).bBookId = 0;//改变用户借书情况
+						if ((*i).sum == 0)//如果遗失后馆内无此书，则删除该书信息
+						{
+							bookList.erase(i);
+						}
+						exam = true;
+						cout << "还书成功" << endl;
+						system("pause");
+					}
+				}
+				if (exam == false)
+				{
+					cout << "该用户并未借阅此书籍" << endl;
+					system("pause");
+				}
+			}
+		}
 	}
 
 }
@@ -287,7 +362,7 @@ bool CApp::login()
 
 		if (strcmp(tpasswd, (*i).GetPasswd()) == 0)
 		{
-			cout << "登录成功" << endl;
+			cout << "用户 "<< tname<<" 登录成功" << endl;
 			strcpy(currentUserName, tname);
 			system("pause");
 			return true;
@@ -296,7 +371,7 @@ bool CApp::login()
 		{
 			cout << "密码输入错误！" << endl;
 			system("pause");
-			continue;
+			return false;
 		}
 	}
 	return false;
@@ -420,6 +495,8 @@ int CApp::DisplayFirstPage()
 	case '1':
 		if (login() == true)
 			return NEXT;
+		else
+			return STAY;
 		break;
 	case '2':
 		logon();
@@ -438,18 +515,18 @@ int CApp::DisplayFirstPage()
 }
 
 
-bool CApp::LoadData()
+bool CApp::LoadData()//在CApp类的构造函数中调用
 {
 	fstream fp;
-	fp.open("user_data.dat", ios::in | ios::binary);
-	if (fp.is_open() == false)
+	fp.open("user_data.dat", ios::in | ios::binary);//打开文件
+	if (fp.is_open() == false)//若打开失败则创建
 	{
 		fp.open("user_data.dat", ios::out | ios::binary);
 		fp.close();
 		fp.open("user_data.dat", ios::in | ios::binary);
 	}
 	CReader r;
-	while (fp.read((char*)& r, sizeof(r)))
+	while (fp.read((char*)& r, sizeof(r)))//读取到文件末尾
 		userList.push_back(r);
 	fp.close();
 
@@ -588,12 +665,12 @@ void CApp::RevertByAdmin(CReader a)
 
 list<CReader>::iterator CApp::FindUser(const char* n)
 {
-	for (auto i = userList.begin(); i != userList.end(); i++)
+	for (auto i = userList.begin(); i != userList.end(); i++)//遍历用户链表
 	{
 		if (strcmp(n, (*i).GetName()) == 0)
-			return i;
+			return i;//找到了，返回该用户迭代器
 	}
-	return userList.end();
+	return userList.end();//没找到，返回空迭代器
 }
 
 
@@ -644,12 +721,7 @@ int CApp::DisplayAdminMenu()
 		return STAY;
 		break;
 	case '6':
-		cout << "请输入用户名:" << endl;
-		cin >> name;
-		if (FindUser(name) == userList.end())
-			cout << "未找到该用户！" << endl;
-		else
-			RevertByAdmin(*FindUser(name));
+		LostReturnBook();
 		return STAY;
 		break;
 	case '7':
@@ -884,6 +956,7 @@ bool CApp::AddBookInfo()
 		newbook.appointment = 0;
 		bookList.push_back(newbook);
 		cout << "存储成功" << endl;
+		system("pause");
 	}
 	else
 	{
@@ -1082,18 +1155,18 @@ void CApp::DeleteBook()
 }
 
 
-bool CApp::SaveData()
+bool CApp::SaveData()//在CApp的析构函数中调用
 {
 	fstream fp;
 	CReader r;
 	CBook b;
-	fp.open("user_data.dat", ios::binary | ios::out);
-	for (auto i = userList.begin(); i != userList.end(); i++)
+	fp.open("user_data.dat", ios::binary | ios::out);//打开文件
+	for (auto i = userList.begin(); i != userList.end(); i++)//将链表全部写入文件
 	{
 		fp.write((char*) & (*i), sizeof(r));
 	}
-	fp.close();
-	fp.open("book_data.dat", ios::binary | ios::out);
+	fp.close();//关闭文件
+	fp.open("book_data.dat", ios::binary | ios::out);//同上
 	for (auto i = bookList.begin(); i != bookList.end(); i++)
 	{
 		fp.write((char*) & (*i), sizeof(b));
