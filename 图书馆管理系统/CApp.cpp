@@ -14,8 +14,8 @@ CApp::~CApp()
 }
 CApp::CApp()
 {
-	admin.SetName("A");
-	admin.SetPasswd("0");
+	admin.SetName("Admin");
+	admin.SetPasswd("admin");
 	strcpy(currentUserName, "");
 	LoadData();
 }
@@ -854,7 +854,7 @@ int CApp::DisplayReaderMenu()
 
 void CApp::Search_BookPos_WithKind(char Kind[15])
 {
-	cout << "图书馆主要类型有工科，理科，医学，农学，艺术，人文。" << endl;
+	//cout << "图书馆主要类型有工科，理科，医学，农学，艺术，人文。" << endl;
 	int num = 0;
 	for (auto i = bookList.begin(); i != bookList.end(); i++)
 	{
